@@ -1,0 +1,5 @@
+EXPORTS
+Sum @1
+SumArr @2
+ToUpper @3
+Invert @6 
