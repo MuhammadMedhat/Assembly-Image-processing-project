@@ -2,4 +2,5 @@ EXPORTS
 Sum @1
 SumArr @2
 ToUpper @3
-Invert @6 
+Invert @4 
+Equalize @5

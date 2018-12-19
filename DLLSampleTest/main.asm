@@ -1,6 +1,9 @@
 include irvine32.inc
 .data
-;no static data
+minr DWORD 2147483647 ;minimum red freq for equalization
+minb DWORD 2147483647 ;minimum blue freq for equalization
+ming DWORD 2147483647 ;minimum green freq for equalization
+
 .code
 ;-----------------------------------------------------
 ;Sum PROC Calculates 2 unsigned integers
@@ -62,12 +65,9 @@ ToUpper PROC str1:PTR BYTE, sz:DWORD
 	ret
 ToUpper ENDP
 
-
 ;#######################################################
 ;#					Project Procedures					#
 ;#######################################################
-
-
 
 Invert proc redChannel:PTR DWORD, greenChannel:PTR DWORD, blueChannel:PTR DWORD, imageSize: DWORD
 	PUSHAD
@@ -145,11 +145,88 @@ Invert proc redChannel:PTR DWORD, greenChannel:PTR DWORD, blueChannel:PTR DWORD,
 	RET
 Invert endp
 
+accumilativesum PROC uses edi
+	add edi, 4
+	accumilate:
+		mov ebx, [edi - 4]
+		add [edi], ebx
+		mov ebx, [edi]
+		cmp ebx, 0
+		JE ENDaccumilate
+		cmp ebx, EAX
+		JGE ENDaccumilate
+		mov eax, ebx
+		ENDaccumilate:
+		add edi, 4
+	loop accumilate
+	ret
+accumilativesum ENDP
 
+calchv PROC
+	calcloop:		
+		mov eax, [edi]
+		cmp eax, 0
+		je next
+		mov ebx , 255 
+		push edx
+		mul ebx
+		pop edx
+		mov ebx, edx
+		push edx
+		mov edx, 0
+		div EBX
+		mov [edi] , eax
+		pop edx
+		next:
+		add edi, 4
+	loop calcloop
+	RET
+calchv endp
+Equalize proc redfreq:PTR DWORD, greenfreq:PTR DWORD, bluefreq:PTR DWORD, imageSize: DWORD
+	PUSHAD
+	mov edi, redfreq
+	mov ecx, 255
+	mov eax, minr
+	call accumilativesum
+	mov minr, eax
+	mov edi, bluefreq
+	mov ecx, 255
+	mov eax, minb
+	call accumilativesum
+	mov minb, eax
+	mov edi, greenfreq
+	mov ecx, 255
+	mov eax, ming
+	call accumilativesum
+	mov ming, eax
+	
+	mov edi, redfreq
+	mov ecx, 256
+	mov ebx, 255
+	mov esi, minr
+	mov edx, imageSize
+	;sub edx, minr
+	call calchv
+	
+	mov edi, greenfreq
+	mov ecx, 256
+	mov ebx, 255
+	mov esi, ming
+	mov edx, imageSize
+	;sub edx, ming
+	call calchv
+	
+	mov edi, bluefreq
+	mov ecx, 256
+	mov ebx, 255
+	mov esi, minb
+	mov edx, imageSize
+	;sub edx, minb
+	call calchv
 
-
-
-
+	POPAD
+	RET
+Equalize endp
 
 ; DllMain is required for any DLL
 DllMain PROC hInstance:DWORD, fdwReason:DWORD, lpReserved:DWORD

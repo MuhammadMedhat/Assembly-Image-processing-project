@@ -37,7 +37,9 @@ namespace CsharpGUI
         [DllImport("Project.dll")]
         private static extern void Invert([In, Out] int[] redChannel, [In, Out] int[] greenChannel,
                                             [In, Out] int[] blueChannel, int imageSize);
-
+        [DllImport("Project.dll")]
+        private static extern void Equalize([In, Out] int[] redfreq, [In, Out] int[] greenfreq,
+                                            [In, Out] int[] bluefreq, int imageSize);
 
 
         public ImageBuffers BuffersFirstImage
@@ -140,8 +142,6 @@ namespace CsharpGUI
             }
         }
 
-
-
         private void invert_button_Click(object sender, EventArgs e)
         {
             //Get first image buffers
@@ -160,7 +160,29 @@ namespace CsharpGUI
 
         private void equalize_button_Click(object sender, EventArgs e)
         {
-            //Implement this function by your own
+            int[] freqr = new int[300];
+            int[] freqg = new int[300];
+            int[] freqb = new int[300];
+            Bitmap img = new Bitmap(this.SecondImage);
+            for (int i = 0; i < img.Width; i++)
+                for (int j = 0; j < img.Height; j++)
+                {
+                    Color pxl = img.GetPixel(i, j);
+                    freqb[pxl.B]++;
+                    freqr[pxl.R]++;
+                    freqg[pxl.G]++;
+                }
+
+            Equalize(freqr, freqg, freqb, img.Width * img.Height);
+            
+            for (int i = 0; i < img.Width; i++)
+                for (int j = 0; j < img.Height; j++)
+                {
+                    Color pxl = img.GetPixel(i, j);
+                    img.SetPixel(i, j, Color.FromArgb(freqr[pxl.R], freqg[pxl.G], freqb[pxl.B]));
+                }
+            outputImage_pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            outputImage_pictureBox.Image = img;
         }
 
         private void loadSecondImageToolStripMenuItem_Click(object sender, EventArgs e)
