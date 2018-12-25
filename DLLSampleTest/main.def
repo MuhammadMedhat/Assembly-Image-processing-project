@@ -4,3 +4,7 @@ SumArr @2
 ToUpper @3
 Invert @4 
 Equalize @5
+get_element @7
+Gx @8
+Gy @9
+pad_zeros @10

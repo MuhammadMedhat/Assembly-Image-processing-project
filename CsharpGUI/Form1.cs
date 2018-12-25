@@ -163,7 +163,8 @@ namespace CsharpGUI
             int[] freqr = new int[300];
             int[] freqg = new int[300];
             int[] freqb = new int[300];
-            Bitmap img = new Bitmap(this.SecondImage);
+            //Bitmap img = new Bitmap(this.SecondImage);
+            Bitmap img = new Bitmap(inputImage2_pictureBox1.Image);
             for (int i = 0; i < img.Width; i++)
                 for (int j = 0; j < img.Height; j++)
                 {
@@ -214,6 +215,34 @@ namespace CsharpGUI
                     MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
                 }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int width = BuffersFirstImage.Width;
+            int height = BuffersFirstImage.Height;
+            int NW = width + 2;
+            int NH = height + 2;
+            int[] PaddedRedChannel = new int[NW * NH];
+            int[] Redges = new int[width * height];
+            Program.pad_zeros(PaddedRedChannel,BuffersFirstImage.RedChannel, NW, NH);
+            Program.Gx(PaddedRedChannel, Redges, NW, NH);
+            var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(Redges, Redges, Redges, width, height);
+            this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int width = BuffersFirstImage.Width;
+            int height = BuffersFirstImage.Height;
+            int NW = width + 2;
+            int NH = height + 2;
+            int[] PaddedRedChannel = new int[NW * NH];
+            int[] Redges = new int[width * height];
+            Program.pad_zeros(PaddedRedChannel, BuffersFirstImage.RedChannel, NW, NH);
+            Program.Gy(PaddedRedChannel, Redges, NW, NH);
+            var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(Redges, Redges, Redges, width, height);
+            this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
         }
     }
 }
