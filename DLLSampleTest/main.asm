@@ -1,8 +1,6 @@
 include irvine32.inc
 .data
-minr DWORD 2147483647 ;minimum red freq for equalization
-minb DWORD 2147483647 ;minimum blue freq for equalization
-ming DWORD 2147483647 ;minimum green freq for equalization
+maxi DWORD 0 ;maximum freq for equalization
 numberR dword 0
 numberC dword 0
 negative1 sdword -1
@@ -154,87 +152,72 @@ Invert proc redChannel:PTR DWORD, greenChannel:PTR DWORD, blueChannel:PTR DWORD,
 Invert endp
 
 accumilativesum PROC uses edi
-	add edi, 4
-	accumilate:
-		mov ebx, [edi - 4]
-		add [edi], ebx
-		mov ebx, [edi]
-		cmp ebx, 0
-		JE ENDaccumilate
-		cmp ebx, EAX
-		JGE ENDaccumilate
-		mov eax, ebx
-		ENDaccumilate:
-		add edi, 4
-	loop accumilate
 	ret
 accumilativesum ENDP
 
 calchv PROC
 	calcloop:		
 		mov eax, [edi]
-		cmp eax, 0
-		je next
-		mov ebx , 255 
+		mov ebx , 256
 		push edx
 		mul ebx
 		pop edx
-		mov ebx, edx
+		mov ebx, esi
 		push edx
 		mov edx, 0
 		div EBX
 		mov [edi] , eax
 		pop edx
-		next:
 		add edi, 4
 	loop calcloop
 	RET
 calchv endp
-Equalize proc redfreq:PTR DWORD, greenfreq:PTR DWORD, bluefreq:PTR DWORD, imageSize: DWORD
+
+Equalize proc freqarr:PTR DWORD, imageSize: DWORD
 	PUSHAD
-	mov edi, redfreq
+
+	mov maxi, 0
+
+	;accumilative sum to the channel	
+	mov edi, freqarr
+	add edi, 4
 	mov ecx, 255
-	mov eax, minr
-	call accumilativesum
-	mov minr, eax
-	mov edi, bluefreq
-	mov ecx, 255
-	mov eax, minb
-	call accumilativesum
-	mov minb, eax
-	mov edi, greenfreq
-	mov ecx, 255
-	mov eax, ming
-	call accumilativesum
-	mov ming, eax
-	
-	mov edi, redfreq
+	accumilate:
+		mov ebx, [edi - 4]
+		add [edi], ebx
+		add edi, 4
+	loop accumilate
+	sub EDI, 4
+	mov EAX, [EDI]
+	mov maxi, EAX
+
+	;multiply the accumilative sum of the channel by number of colors - 1(255)
+	mov edi, freqarr
 	mov ecx, 256
-	mov ebx, 255
-	mov esi, minr
-	mov edx, imageSize
-	;sub edx, minr
-	call calchv
+	multiply:
+		mov ebx, [edi]
+		mov eax, 255
+		mul ebx
+		mov [edi], eax
+		add edi, 4
+	loop multiply
 	
-	mov edi, greenfreq
+	;Divide the modified channel array by the maximum number in the accumilative
+	mov edi, freqarr
 	mov ecx, 256
-	mov ebx, 255
-	mov esi, ming
-	mov edx, imageSize
-	;sub edx, ming
-	call calchv
-	
-	mov edi, bluefreq
-	mov ecx, 256
-	mov ebx, 255
-	mov esi, minb
-	mov edx, imageSize
-	;sub edx, minb
-	call calchv
+	dividech:
+		mov eax, [edi]
+		mov edx, 0
+		mov ebx, maxi
+		div EBX
+		mov [EDI], EAX
+		add edi, 4
+	LOOP dividech
 
 	POPAD
 	RET
 Equalize endp
+
 get_element PROC channel : PTR sdword, wid : dword
 push ebx
 push esi
@@ -289,7 +272,7 @@ mov ecx, _width
 		 imul negative1
 		 add ebx, eax
 		 sub numberR, 1
-	 	 invoke get_element, channel, _width
+		 invoke get_element, channel, _width
 		 imul negative2
 		 add ebx, eax
 		 sub numberR, 1
@@ -324,8 +307,8 @@ mov ecx, _width
 	 JNZ LW
 		  mov ecx, Hsofar
 		  add numberR, 1
-	      mov numberC, 0
-	      sub ecx, 1
+		  mov numberC, 0
+		  sub ecx, 1
 	JNZ LH
 popad
 RET
@@ -339,12 +322,12 @@ LH:
    mov Hsofar, ecx
    mov ecx, _width
    LW:
-     mov ebx, Hsofar
-     cmp ecx, _width
-     JZ con
-     cmp ecx, 1
-     JZ con
-     cmp ebx, _height
+	 mov ebx, Hsofar
+	 cmp ecx, _width
+	 JZ con
+	 cmp ecx, 1
+	 JZ con
+	 cmp ebx, _height
 	 JZ con
 	 cmp ebx, 1
 	 JZ con
@@ -375,18 +358,18 @@ LH:
 		 JL NegativeValue
 		 jmp PositiveValidation
 		 NegativeValue :
-	     imul negative1
+		 imul negative1
 		 PositiveValidation:
-	     cmp eax, 255
+		 cmp eax, 255
 		 JG Trim2
 		 cmp eax, 70
 		 JL Trim1
 		 jmp endValidation
 		 Trim1 :
-	     mov eax, 0
+		 mov eax, 0
 		 jmp endValidation
 		 Trim2 :
-	     mov eax, 255
+		 mov eax, 255
 		 endValidation :
 		 mov[edi], eax
 

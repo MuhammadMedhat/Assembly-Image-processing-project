@@ -38,8 +38,7 @@ namespace CsharpGUI
         private static extern void Invert([In, Out] int[] redChannel, [In, Out] int[] greenChannel,
                                             [In, Out] int[] blueChannel, int imageSize);
         [DllImport("Project.dll")]
-        private static extern void Equalize([In, Out] int[] redfreq, [In, Out] int[] greenfreq,
-                                            [In, Out] int[] bluefreq, int imageSize);
+        private static extern void Equalize([In, Out] int[] freqarr, int imageSize);
 
 
         public ImageBuffers BuffersFirstImage
@@ -73,11 +72,6 @@ namespace CsharpGUI
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void toolStripLabel1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void openImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -163,7 +157,6 @@ namespace CsharpGUI
             int[] freqr = new int[300];
             int[] freqg = new int[300];
             int[] freqb = new int[300];
-            //Bitmap img = new Bitmap(this.SecondImage);
             Bitmap img = new Bitmap(inputImage2_pictureBox1.Image);
             for (int i = 0; i < img.Width; i++)
                 for (int j = 0; j < img.Height; j++)
@@ -174,8 +167,10 @@ namespace CsharpGUI
                     freqg[pxl.G]++;
                 }
 
-            Equalize(freqr, freqg, freqb, img.Width * img.Height);
-            
+            Equalize(freqr, img.Width * img.Height);
+            Equalize(freqb, img.Width * img.Height);
+            Equalize(freqg, img.Width * img.Height);
+
             for (int i = 0; i < img.Width; i++)
                 for (int j = 0; j < img.Height; j++)
                 {

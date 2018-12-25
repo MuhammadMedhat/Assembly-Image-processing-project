@@ -89,20 +89,20 @@
             // inputImage_pictureBox
             // 
             this.inputImage_pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.inputImage_pictureBox.Location = new System.Drawing.Point(9, 50);
+            this.inputImage_pictureBox.Location = new System.Drawing.Point(11, 49);
             this.inputImage_pictureBox.Margin = new System.Windows.Forms.Padding(2);
             this.inputImage_pictureBox.Name = "inputImage_pictureBox";
-            this.inputImage_pictureBox.Size = new System.Drawing.Size(338, 469);
+            this.inputImage_pictureBox.Size = new System.Drawing.Size(383, 469);
             this.inputImage_pictureBox.TabIndex = 1;
             this.inputImage_pictureBox.TabStop = false;
             // 
             // outputImage_pictureBox
             // 
             this.outputImage_pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.outputImage_pictureBox.Location = new System.Drawing.Point(683, 50);
+            this.outputImage_pictureBox.Location = new System.Drawing.Point(825, 49);
             this.outputImage_pictureBox.Margin = new System.Windows.Forms.Padding(2);
             this.outputImage_pictureBox.Name = "outputImage_pictureBox";
-            this.outputImage_pictureBox.Size = new System.Drawing.Size(459, 476);
+            this.outputImage_pictureBox.Size = new System.Drawing.Size(399, 469);
             this.outputImage_pictureBox.TabIndex = 2;
             this.outputImage_pictureBox.TabStop = false;
             // 
@@ -129,10 +129,10 @@
             // inputImage2_pictureBox1
             // 
             this.inputImage2_pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.inputImage2_pictureBox1.Location = new System.Drawing.Point(374, 50);
+            this.inputImage2_pictureBox1.Location = new System.Drawing.Point(415, 49);
             this.inputImage2_pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.inputImage2_pictureBox1.Name = "inputImage2_pictureBox1";
-            this.inputImage2_pictureBox1.Size = new System.Drawing.Size(285, 469);
+            this.inputImage2_pictureBox1.Size = new System.Drawing.Size(383, 469);
             this.inputImage2_pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.inputImage2_pictureBox1.TabIndex = 9;
             this.inputImage2_pictureBox1.TabStop = false;
