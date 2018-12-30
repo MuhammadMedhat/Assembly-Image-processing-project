@@ -43,6 +43,9 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.AddButton = new System.Windows.Forms.Button();
+            this.SubButton = new System.Windows.Forms.Button();
+            this.Gray = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.inputImage_pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.outputImage_pictureBox)).BeginInit();
@@ -133,7 +136,6 @@
             this.inputImage2_pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.inputImage2_pictureBox1.Name = "inputImage2_pictureBox1";
             this.inputImage2_pictureBox1.Size = new System.Drawing.Size(383, 469);
-            this.inputImage2_pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.inputImage2_pictureBox1.TabIndex = 9;
             this.inputImage2_pictureBox1.TabStop = false;
             // 
@@ -160,7 +162,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(495, 541);
+            this.button1.Location = new System.Drawing.Point(418, 541);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 11;
@@ -170,7 +172,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(51, 541);
+            this.button2.Location = new System.Drawing.Point(96, 541);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 12;
@@ -180,7 +182,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(173, 541);
+            this.button3.Location = new System.Drawing.Point(218, 541);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 13;
@@ -188,11 +190,44 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // AddButton
+            // 
+            this.AddButton.Location = new System.Drawing.Point(521, 541);
+            this.AddButton.Name = "AddButton";
+            this.AddButton.Size = new System.Drawing.Size(75, 23);
+            this.AddButton.TabIndex = 14;
+            this.AddButton.Text = "Add";
+            this.AddButton.UseVisualStyleBackColor = true;
+            this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
+            // 
+            // SubButton
+            // 
+            this.SubButton.Location = new System.Drawing.Point(622, 541);
+            this.SubButton.Name = "SubButton";
+            this.SubButton.Size = new System.Drawing.Size(75, 23);
+            this.SubButton.TabIndex = 15;
+            this.SubButton.Text = "Sub";
+            this.SubButton.UseVisualStyleBackColor = true;
+            this.SubButton.Click += new System.EventHandler(this.SubButton_Click);
+            // 
+            // Gray
+            // 
+            this.Gray.Location = new System.Drawing.Point(725, 541);
+            this.Gray.Name = "Gray";
+            this.Gray.Size = new System.Drawing.Size(75, 23);
+            this.Gray.TabIndex = 16;
+            this.Gray.Text = "Gray Scale";
+            this.Gray.UseVisualStyleBackColor = true;
+            this.Gray.Click += new System.EventHandler(this.Gray_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1028, 582);
+            this.Controls.Add(this.Gray);
+            this.Controls.Add(this.SubButton);
+            this.Controls.Add(this.AddButton);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -234,6 +269,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button AddButton;
+        private System.Windows.Forms.Button SubButton;
+        private System.Windows.Forms.Button Gray;
     }
 }
 

@@ -8,3 +8,6 @@ get_element @7
 Gx @8
 Gy @9
 pad_zeros @10
+addpic @11
+subpic @12
+grayscale @13

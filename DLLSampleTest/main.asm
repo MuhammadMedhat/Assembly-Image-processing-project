@@ -419,7 +419,70 @@ LH:
 			loop LW
 			popad
 			RET
-			pad_zeros endp
+pad_zeros endp
+addpic PROC result : PTR dword,channel1 : PTR dword,channel2 : PTR dword,sz:dword
+mov edi,result
+mov esi,channel1
+mov edx,channel2
+mov ecx,sz
+L0:
+mov eax,[esi]
+add eax,[edx]
+mov [edi],eax
+add esi,4
+add edi,4
+add edx,4
+loop L0
+RET 
+addpic endp
+
+subpic PROC result : PTR dword,channel1 : PTR dword,channel2 : PTR dword,sz:dword
+mov edi,result
+mov esi,channel1
+mov edx,channel2
+mov ecx,sz
+L0:
+mov eax,[esi]
+sub eax,[edx]
+cmp eax, 0
+jGE negtivepx
+mov eax, 0
+negtivepx:
+mov [edi],eax
+add esi,4
+add edi,4
+add edx,4
+loop L0
+RET 
+subpic endp
+
+grayscale PROC result : PTR dword,channel1 : PTR dword,channel2 : PTR dword, channel3: PTR dword, sz:dword
+mov edi,result
+mov esi,channel1
+mov edx,channel2
+mov ebx,channel3
+mov ecx,sz
+L0:
+mov eax, [esi]
+add eax, [edx]
+add eax, [ebx]
+push ecx
+mov ecx,3
+push edx
+mov edx,0
+div ecx
+pop edx
+pop ecx
+
+mov [edi],eax
+add esi,4
+add edi,4
+add edx,4
+add ebx,4
+
+loop L0
+RET 
+grayscale endp
 
 ; DllMain is required for any DLL
 DllMain PROC hInstance:DWORD, fdwReason:DWORD, lpReserved:DWORD

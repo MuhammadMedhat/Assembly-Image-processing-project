@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
@@ -29,7 +23,6 @@ namespace CsharpGUI
         private static extern void AddImages([In] int[] firstChannelToAdd, [In] int[] secondChannelToAdd
                                             , [Out] int[] output, int imageSize);
 
-
         [DllImport("Project.dll")]
         private static extern void SubImages([In] int[] firstChannelToSub, [In] int[] secondChannelToSub
                                             , [Out] int[] output, int imageSize);
@@ -40,6 +33,14 @@ namespace CsharpGUI
         [DllImport("Project.dll")]
         private static extern void Equalize([In, Out] int[] freqarr, int imageSize);
 
+        [DllImport("Project.dll")]
+        private static extern void addpic([In, Out] int[] result, [In] int[] channel1, [In]int[] channel2, int sz);
+
+        [DllImport("Project.dll")]
+        private static extern void subpic([In, Out] int[] result, [In] int[] channel1, [In]int[] channel2, int sz);
+
+        [DllImport("Project.dll")]
+        private static extern void grayscale([In, Out] int[] result, [In] int[] channel1, [In]int[] channel2, [In]int[] channel3, int sz);
 
         public ImageBuffers BuffersFirstImage
         {
@@ -220,7 +221,7 @@ namespace CsharpGUI
             int NH = height + 2;
             int[] PaddedRedChannel = new int[NW * NH];
             int[] Redges = new int[width * height];
-            Program.pad_zeros(PaddedRedChannel,BuffersFirstImage.RedChannel, NW, NH);
+            Program.pad_zeros(PaddedRedChannel, BuffersFirstImage.RedChannel, NW, NH);
             Program.Gx(PaddedRedChannel, Redges, NW, NH);
             var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(Redges, Redges, Redges, width, height);
             this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
@@ -237,6 +238,55 @@ namespace CsharpGUI
             Program.pad_zeros(PaddedRedChannel, BuffersFirstImage.RedChannel, NW, NH);
             Program.Gy(PaddedRedChannel, Redges, NW, NH);
             var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(Redges, Redges, Redges, width, height);
+            this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)
+        {
+            int width = BuffersFirstImage.Width, height = BuffersFirstImage.Height;
+            int[] resultR = new int[width * height];
+            int[] resultG = new int[width * height];
+            int[] resultB = new int[width * height];
+            addpic(resultR, BuffersFirstImage.RedChannel, BuffersSecondImage.RedChannel, width * height);
+            addpic(resultB, BuffersFirstImage.BlueChannel, BuffersSecondImage.BlueChannel, width * height);
+            addpic(resultG, BuffersFirstImage.GreenChannel, BuffersSecondImage.GreenChannel, width * height);
+
+            for (int i = 0; i < width * height; ++i)
+            {
+                resultR[i] = Math.Min(resultR[i], 255);
+                resultG[i] = Math.Min(resultG[i], 255);
+                resultB[i] = Math.Min(resultB[i], 255);
+            }
+
+            var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(resultR, resultG, resultB, width, height);
+            this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
+        }
+
+        private void SubButton_Click(object sender, EventArgs e)
+        {
+            int width = BuffersFirstImage.Width, height = BuffersFirstImage.Height;
+            int[] resultR = new int[width * height];
+            int[] resultG = new int[width * height];
+            int[] resultB = new int[width * height];
+            subpic(resultR, BuffersFirstImage.RedChannel, BuffersSecondImage.RedChannel, width * height);
+            subpic(resultB, BuffersFirstImage.BlueChannel, BuffersSecondImage.BlueChannel, width * height);
+            subpic(resultG, BuffersFirstImage.GreenChannel, BuffersSecondImage.GreenChannel, width * height);
+
+            var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(resultR, resultG, resultB, width, height);
+            this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
+        }
+
+        private void Gray_Click(object sender, EventArgs e)
+        {
+            int width = BuffersSecondImage.Width, height = BuffersSecondImage.Height;
+            int[] resultR = new int[width * height];
+            int[] resultG = new int[width * height];
+            int[] resultB = new int[width * height];
+            grayscale(resultR, BuffersSecondImage.RedChannel, BuffersSecondImage.BlueChannel, BuffersSecondImage.GreenChannel, width * height);
+            grayscale(resultB, BuffersSecondImage.RedChannel, BuffersSecondImage.BlueChannel, BuffersSecondImage.GreenChannel, width * height);
+            grayscale(resultG, BuffersSecondImage.RedChannel, BuffersSecondImage.BlueChannel, BuffersSecondImage.GreenChannel, width * height);
+
+            var outputBuffersObject = ImageHelper.CreateNewImageBuffersObject(resultR, resultG, resultB, width, height);
             this.outputImage_pictureBox.Image = (Bitmap)ImageHelper.GetImageFromBuffers(outputBuffersObject).BitmapObject;
         }
     }
